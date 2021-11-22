@@ -1,6 +1,7 @@
 package com.rsupport.notice.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.rsupport.notice.entity.NoticePost;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -30,5 +31,14 @@ public class NoticePostDTO {
 
     @JsonProperty("views")
     private final int hit;
+
+    public NoticePostDTO(NoticePost post) {
+        this.id = post.getId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.noticedFrom = post.getNoticedFrom();
+        this.noticedUntil = post.getNoticedUntil();
+        this.hit = post.getHit();
+    }
 
 }
