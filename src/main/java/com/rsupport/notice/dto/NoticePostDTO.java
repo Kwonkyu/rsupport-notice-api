@@ -22,6 +22,7 @@ public class NoticePostDTO {
     private final String content;
 
     @JsonProperty("createdDateTime")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime createdAt;
 
     @JsonProperty("postNoticedFrom")
@@ -43,6 +44,16 @@ public class NoticePostDTO {
         this.noticedFrom = post.getNoticedFrom();
         this.noticedUntil = post.getNoticedUntil();
         this.hit = post.getHit();
+    }
+
+    public NoticePostDTO(NoticePost post, int hit) {
+        this.id = post.getId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.createdAt = post.getCreatedAt();
+        this.noticedFrom = post.getNoticedFrom();
+        this.noticedUntil = post.getNoticedUntil();
+        this.hit = hit;
     }
 
 }

@@ -16,8 +16,8 @@ public class JwtUtil {
 
     @Value("${JWT_SECRET}") private String jwtSecret;
 
-    private static final long ACCESS_TOKEN_EXPIRATION_TIME = (long) 24 * 60 * 60 * 1000;
-    private static final long REFRESH_TOKEN_EXPIRATION_TIME = (long) 7 * 24 * 60 * 60 * 1000;
+    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 24 * 60 * 60 * 1000L;
+    private static final long REFRESH_TOKEN_EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000L;
 
     private JwtBuilder buildUntilExpirationDate(String subject) {
         return Jwts.builder()

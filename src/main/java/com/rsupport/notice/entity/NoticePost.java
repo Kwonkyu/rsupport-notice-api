@@ -3,20 +3,19 @@ package com.rsupport.notice.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @Table(name = "notice_post")
-public class NoticePost extends AuditableEntity{
+@EntityListeners(AuditingEntityListener.class)
+public class NoticePost extends AuditableEntity {
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -52,8 +51,9 @@ public class NoticePost extends AuditableEntity{
         this.noticedUntil = noticedUntil;
     }
 
-    public int increaseHit() {
-        return ++hit;
+    public void writeBackHit(NoticePostHit hit) {
+        this.hit = hit.getHit();
+        hit.refreshLastWriteBackTime();
     }
 
     @Builder
