@@ -8,6 +8,7 @@ import org.springframework.util.Assert;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
@@ -20,7 +21,8 @@ public class NoticePost extends AuditableEntity{
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "content", length = 65535, nullable = false)
+    @Lob
+    @Column(name = "content", nullable = false)
     private String content;
 
     @Column(name = "noticed_from", nullable = false)
