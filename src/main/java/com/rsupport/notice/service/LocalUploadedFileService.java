@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -42,16 +41,22 @@ public class LocalUploadedFileService {
         List<UploadedLocalFile> uploadedLocalFiles = files.stream()
                 .filter(file -> !file.isEmpty())
                 .map(file -> {
-                    try {
-                        String hash = hashUtil.hash(file);
+                    String hash = hashUtil.hash(file);
+                    if(hash.isEmpty()) return null;
+
+                    return uploadedFileRepository.findByFileHashString(hash).orElseGet(() -> {
                         String originalFilename = Objects.requireNonNullElse(file.getOriginalFilename(), hash);
-                        file.transferTo(uploadedFilePath.resolve(originalFilename));
-                        return uploadedFileRepository.save(
-                                new UploadedLocalFile(hash, originalFilename, uploadedFilePath.resolve(originalFilename).toString()));
-                    } catch (IOException | NoSuchAlgorithmException e) {
-                        // TODO: logging for file upload error.
-                        return null;
-                    }
+                        try {
+                            file.transferTo(uploadedFilePath.resolve(originalFilename));
+                            return uploadedFileRepository.save(new UploadedLocalFile(
+                                    hash,
+                                    originalFilename,
+                                    uploadedFilePath.resolve(originalFilename).toString()));
+                        } catch (IOException e) {
+                            // TODO: logging file upload failure from here.
+                            return null;
+                        }
+                    });
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
