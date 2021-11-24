@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -24,4 +25,16 @@ public class UploadedLocalFile extends IdentifiableEntity {
     @Column(name = "location", nullable = false)
     private String fileLocation;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UploadedLocalFile that = (UploadedLocalFile) o;
+        return fileHashString.equals(that.fileHashString) && filename.equals(that.filename) && fileLocation.equals(that.fileLocation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fileHashString, filename, fileLocation);
+    }
 }

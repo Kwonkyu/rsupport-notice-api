@@ -38,6 +38,16 @@ public class NoticePost extends AuditableEntity {
     @OneToMany(cascade = CascadeType.PERSIST)
     private final List<UploadedLocalFile> attachedFiles = new ArrayList<>();
 
+    public void addFile(UploadedLocalFile file) {
+        Assert.notNull(file, "Attaching file cannot be null.");
+        this.attachedFiles.add(file);
+    }
+
+    public void removeFile(UploadedLocalFile file) {
+        Assert.notNull(file, "Removing file cannot be null.");
+        this.attachedFiles.remove(file);
+    }
+
     public void changeTitle(String title) {
         Assert.hasText(title, "Title string cannot be blank.");
         this.title = title;

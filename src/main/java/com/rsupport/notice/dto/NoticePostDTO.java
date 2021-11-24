@@ -36,14 +36,11 @@ public class NoticePostDTO {
     @JsonProperty("views")
     private final int hit;
 
+    @JsonProperty("attachedFiles")
+    private final UploadedLocalFilesDTO uploadedLocalFilesDTO;
+
     public NoticePostDTO(NoticePost post) {
-        this.id = post.getId();
-        this.title = post.getTitle();
-        this.content = post.getContent();
-        this.createdAt = post.getCreatedAt();
-        this.noticedFrom = post.getNoticedFrom();
-        this.noticedUntil = post.getNoticedUntil();
-        this.hit = post.getHit();
+        this(post, post.getHit());
     }
 
     public NoticePostDTO(NoticePost post, int hit) {
@@ -54,6 +51,7 @@ public class NoticePostDTO {
         this.noticedFrom = post.getNoticedFrom();
         this.noticedUntil = post.getNoticedUntil();
         this.hit = hit;
+        this.uploadedLocalFilesDTO = new UploadedLocalFilesDTO(post.getAttachedFiles());
     }
 
 }

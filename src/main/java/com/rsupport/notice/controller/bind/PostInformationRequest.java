@@ -7,6 +7,8 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,5 +29,8 @@ public class PostInformationRequest {
 
     @JsonProperty("postNoticedUntil")
     private LocalDateTime noticedUntil = LocalDateTime.MAX;
+
+    @JsonProperty("attachedFiles")
+    private List<String> attachedFileHashes = new ArrayList<>();
 
 }
