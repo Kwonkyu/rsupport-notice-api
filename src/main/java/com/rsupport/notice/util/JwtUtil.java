@@ -1,9 +1,6 @@
 package com.rsupport.notice.util;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -38,12 +35,18 @@ public class JwtUtil {
         return new AuthenticatedJwtResponse(accessToken, refreshToken);
     }
 
-    public String validateJwt(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-        return claims.getSubject();
+    public String parseSubjectFromJwt(String token) {
+        if(token == null || token.isBlank()) return "";
+
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(jwtSecret)
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.getSubject();
+        } catch (JwtException exception) {
+            return "";
+        }
     }
 
 }

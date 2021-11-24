@@ -9,9 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -37,7 +37,7 @@ public class NoticePostController {
     public ResponseEntity<ApiResponse<NoticePostDTO>> createPost(@Valid @RequestBody PostInformationRequest request) {
         NoticePostDTO post = noticePostService.createPost(request);
         return ResponseEntity
-                .created(URI.create("/api/v1/notice/" + post.getId()))
+                .created(MvcUriComponentsBuilder.fromMethodName(NoticePostController.class, "readPost", post.getId()).build(post.getId()))
                 .body(ApiResponse.success(post));
     }
 

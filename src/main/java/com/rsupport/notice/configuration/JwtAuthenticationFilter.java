@@ -8,7 +8,6 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.security.sasl.AuthenticationException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,9 +30,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwt = parseJwtRequest(request);
-        if(!jwt.isBlank()) {
-            String subject = jwtUtil.validateJwt(jwt);
-            if (subject.isBlank()) throw new AuthenticationException("Authenticated subject cannot be blank.");
+        String subject = jwtUtil.parseSubjectFromJwt(jwt);
+        if(!subject.isBlank()) {
             PreAuthenticatedAuthenticationToken authenticationToken = new PreAuthenticatedAuthenticationToken(subject, "AUTHENTICATED_BY_JWT");
             authenticationToken.setAuthenticated(true);
             SecurityContextHolder.setContext(new SecurityContextImpl(authenticationToken));
