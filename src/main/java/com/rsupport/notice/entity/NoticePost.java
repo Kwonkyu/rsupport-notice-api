@@ -9,6 +9,8 @@ import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -32,6 +34,9 @@ public class NoticePost extends AuditableEntity {
 
     @Column(name = "hit", nullable = false)
     private int hit;
+
+    @OneToMany(cascade = CascadeType.PERSIST)
+    private final List<UploadedLocalFile> attachedFiles = new ArrayList<>();
 
     public void changeTitle(String title) {
         Assert.hasText(title, "Title string cannot be blank.");

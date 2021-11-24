@@ -3,7 +3,9 @@ package com.rsupport.notice.controller;
 import com.rsupport.notice.controller.bind.ApiResponse;
 import com.rsupport.notice.controller.bind.PostInformationRequest;
 import com.rsupport.notice.dto.NoticePostDTO;
+import com.rsupport.notice.dto.UploadedLocalFilesDTO;
 import com.rsupport.notice.service.BasicNoticePostService;
+import com.rsupport.notice.service.LocalUploadedFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import java.util.List;
 public class NoticePostController {
 
     private final BasicNoticePostService noticePostService;
+    private final LocalUploadedFileService fileService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<NoticePostDTO>>> listPosts(Pageable pageable) { // page, size, sort params.
@@ -52,6 +55,12 @@ public class NoticePostController {
     public ResponseEntity<ApiResponse<Object>> deletePost(@PathVariable("postId") long postId) {
         noticePostService.deletePost(postId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{postId}/files")
+    public ResponseEntity<ApiResponse<UploadedLocalFilesDTO>> getAttachedFiles(@PathVariable("postId") long postId) {
+        UploadedLocalFilesDTO attachedFileList = fileService.getAttachedFileList(postId);
+        return ResponseEntity.ok(ApiResponse.success(attachedFileList));
     }
 
 }
