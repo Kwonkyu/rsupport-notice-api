@@ -7,11 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
@@ -30,13 +30,15 @@ public class FileController {
     }
 
     @GetMapping("/{fileHash}")
-    public ResponseEntity<FileSystemResource> downloadFile(@PathVariable("fileHash") String fileHash,
-                                                           HttpServletResponse response) {
+    public ResponseEntity<FileSystemResource> downloadFile(@PathVariable("fileHash") String fileHash) {
         Path file = fileService.getFileByHash(fileHash);
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.builder("attachment")
-                .filename(file.getFileName().toString(), StandardCharsets.UTF_8)
-                .build().toString());
-        return ResponseEntity.ok(new FileSystemResource(file));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        ContentDisposition.builder("attachment")
+                                .filename(file.getFileName().toString(), StandardCharsets.UTF_8)
+                                .build().toString())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(new FileSystemResource(file));
     }
 
 }
