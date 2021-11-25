@@ -48,6 +48,8 @@ public class BasicNoticePostService {
                 .noticedFrom(request.getNoticedFrom())
                 .noticedUntil(request.getNoticedUntil())
                 .build());
+        if(request.getAttachedFileHashes() == null)
+            throw new IllegalArgumentException("Attached files cannot be null.");
         request.getAttachedFileHashes().stream()
                 .map(fileRepository::findByFileHashString)
                 .filter(Optional::isPresent)
@@ -81,7 +83,8 @@ public class BasicNoticePostService {
         noticePost.changeContent(request.getContent());
         noticePost.changeNoticedFrom(request.getNoticedFrom());
         noticePost.changeNoticedUntil(request.getNoticedUntil());
-
+        if(request.getAttachedFileHashes() == null)
+            throw new IllegalArgumentException("Attached files cannot be null.");
         Set<UploadedLocalFile> updatedFiles = request.getAttachedFileHashes().stream()
                 .map(fileRepository::findByFileHashString)
                 .filter(Optional::isPresent)

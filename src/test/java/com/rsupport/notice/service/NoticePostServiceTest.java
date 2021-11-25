@@ -55,19 +55,50 @@ class NoticePostServiceTest {
     }
 
     @Test
+    @DisplayName("Try creating post with bad request.")
+    void tryCreatePost() {
+        PostInformationRequest request = new PostInformationRequest();
+        request.setTitle("CREATED_POST");
+        request.setContent("CREATED_CONTENT");
+        request.setAttachedFileHashes(List.of(file1.getFileHashString()));
+
+        request.setNoticedFrom(LocalDateTime.now().plusWeeks(3));
+        request.setNoticedUntil(LocalDateTime.now());
+        assertThrows(IllegalArgumentException.class, () -> basicNoticePostService.createPost(request));
+        request.setNoticedFrom(LocalDateTime.now());
+        request.setNoticedUntil(LocalDateTime.now().plusWeeks(3));
+
+        request.setTitle("");
+        assertThrows(IllegalArgumentException.class, () -> basicNoticePostService.createPost(request));
+        request.setTitle("TITLE");
+
+        request.setContent("");
+        assertThrows(IllegalArgumentException.class, () -> basicNoticePostService.createPost(request));
+        request.setContent("CONTENT");
+
+        request.setNoticedFrom(null);
+        assertThrows(IllegalArgumentException.class, () -> basicNoticePostService.createPost(request));
+        request.setNoticedFrom(LocalDateTime.now());
+
+        request.setNoticedUntil(null);
+        assertThrows(IllegalArgumentException.class, () -> basicNoticePostService.createPost(request));
+        request.setNoticedUntil(LocalDateTime.now().plusDays(3));
+
+        request.setAttachedFileHashes(null);
+        assertThrows(IllegalArgumentException.class, () -> basicNoticePostService.createPost(request));
+        request.setAttachedFileHashes(List.of(file1.getFileHashString()));
+    }
+
+    @Test
     @DisplayName("Create post")
     void createPost() {
         PostInformationRequest request = new PostInformationRequest();
         request.setTitle("CREATED_POST");
         request.setContent("CREATED_CONTENT");
-        request.setNoticedFrom(LocalDateTime.now().plusWeeks(3));
-        request.setNoticedUntil(LocalDateTime.now());
-        request.setAttachedFileHashes(List.of(file1.getFileHashString()));
-
-        assertThrows(IllegalArgumentException.class, () -> basicNoticePostService.createPost(request));
-
         request.setNoticedFrom(LocalDateTime.now());
         request.setNoticedUntil(LocalDateTime.now().plusWeeks(3));
+        request.setAttachedFileHashes(List.of(file1.getFileHashString()));
+
         NoticePostDTO post = basicNoticePostService.createPost(request);
 
         assertEquals(request.getTitle(), post.getTitle());
@@ -77,6 +108,26 @@ class NoticePostServiceTest {
         assertEquals(request.getNoticedUntil(), post.getNoticedUntil());
         assertEquals(0, post.getHit());
         assertNotNull(post.getUploadedLocalFilesDTO());
+        assertEquals(file1.getFileHashString(), post.getUploadedLocalFilesDTO().getUploadedFileHashes().get(0).getFileHash());
+        assertEquals(file1.getFilename(), post.getUploadedLocalFilesDTO().getUploadedFileHashes().get(0).getFilename());
+    }
+
+    @Test
+    @DisplayName("Try read post with bad request.")
+    void tryReadPost() {
+        assertThrows(PostNotFoundException.class, () -> basicNoticePostService.findPost(9999L));
+    }
+
+    @Test
+    @DisplayName("Read post.")
+    void readPost() {
+        NoticePostDTO post = basicNoticePostService.findPost(noticePost.getId());
+        assertEquals(noticePost.getTitle(), post.getTitle());
+        assertEquals(noticePost.getContent(), post.getContent());
+        assertEquals(noticePost.getCreatedAt(), post.getCreatedAt());
+        assertEquals(noticePost.getNoticedFrom(), post.getNoticedFrom());
+        assertEquals(noticePost.getNoticedUntil(), post.getNoticedUntil());
+        assertEquals(noticePost.getAttachedFiles().size(), post.getUploadedLocalFilesDTO().getUploadedFileHashes().size());
         assertEquals(file1.getFileHashString(), post.getUploadedLocalFilesDTO().getUploadedFileHashes().get(0).getFileHash());
         assertEquals(file1.getFilename(), post.getUploadedLocalFilesDTO().getUploadedFileHashes().get(0).getFilename());
     }
@@ -109,6 +160,42 @@ class NoticePostServiceTest {
     }
 
     @Test
+    @DisplayName("Try update post with bad request.")
+    void tryUpdatePost() {
+        Long postId = noticePost.getId();
+        PostInformationRequest request = new PostInformationRequest();
+        request.setTitle("UPDATED_POST");
+        request.setContent("UPDATED_CONTENT");
+        request.setAttachedFileHashes(List.of(file1.getFileHashString()));
+
+        request.setNoticedFrom(LocalDateTime.now().plusWeeks(3));
+        request.setNoticedUntil(LocalDateTime.now());
+        assertThrows(IllegalArgumentException.class, () -> basicNoticePostService.updatePost(postId, request));
+        request.setNoticedFrom(LocalDateTime.now());
+        request.setNoticedUntil(LocalDateTime.now().plusWeeks(3));
+
+        request.setTitle("");
+        assertThrows(IllegalArgumentException.class, () -> basicNoticePostService.updatePost(postId, request));
+        request.setTitle("TITLE");
+
+        request.setContent("");
+        assertThrows(IllegalArgumentException.class, () -> basicNoticePostService.updatePost(postId, request));
+        request.setContent("CONTENT");
+
+        request.setNoticedFrom(null);
+        assertThrows(IllegalArgumentException.class, () -> basicNoticePostService.updatePost(postId, request));
+        request.setNoticedFrom(LocalDateTime.now());
+
+        request.setNoticedUntil(null);
+        assertThrows(IllegalArgumentException.class, () -> basicNoticePostService.updatePost(postId, request));
+        request.setNoticedUntil(LocalDateTime.now().plusDays(3));
+
+        request.setAttachedFileHashes(null);
+        assertThrows(IllegalArgumentException.class, () -> basicNoticePostService.updatePost(postId, request));
+        request.setAttachedFileHashes(List.of(file1.getFileHashString()));
+    }
+
+    @Test
     @DisplayName("Update post")
     void updatePost() {
         PostInformationRequest request = new PostInformationRequest();
@@ -128,9 +215,14 @@ class NoticePostServiceTest {
     }
 
     @Test
+    @DisplayName("Try delete post with bad request.")
+    void tryDeletePost() {
+        assertThrows(PostNotFoundException.class, () -> basicNoticePostService.deletePost(9999L));
+    }
+
+    @Test
     @DisplayName("Delete post")
     void deletePost() {
-        assertThrows(PostNotFoundException.class, () -> basicNoticePostService.deletePost(9999L));
         assertDoesNotThrow(() -> basicNoticePostService.deletePost(noticePost.getId()));
         assertFalse(noticePostRepository.existsById(noticePost.getId()));
     }

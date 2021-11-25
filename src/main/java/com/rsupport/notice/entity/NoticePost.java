@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
@@ -59,22 +58,26 @@ public class NoticePost extends AuditableEntity {
         this.content = content;
     }
 
-    public void changeNoticedFrom(@NonNull LocalDateTime noticedFrom) {
+    public void changeNoticedFrom(LocalDateTime noticedFrom) {
+        Assert.notNull(noticedFrom, "Notice date cannot be null.");
+        if(noticedUntil.isBefore(noticedFrom)) throw new IllegalArgumentException("Noticing date cannot be reversed.");
         this.noticedFrom = noticedFrom;
     }
 
-    public void changeNoticedUntil(@NonNull LocalDateTime noticedUntil) {
+    public void changeNoticedUntil(LocalDateTime noticedUntil) {
+        Assert.notNull(noticedUntil, "Notice date cannot be null.");
+        if(noticedFrom.isAfter(noticedUntil)) throw new IllegalArgumentException("Noticing date cannot be reversed.");
         this.noticedUntil = noticedUntil;
     }
 
     public void writeBackHit(NoticePostHit hit) {
+        Assert.notNull(hit, "Notice post hit cannot be null.");
         this.hit = hit.getHit();
         hit.refreshLastWriteBackTime();
     }
 
     @Builder
     public NoticePost(String title, String content, LocalDateTime noticedFrom, LocalDateTime noticedUntil) {
-        if(noticedFrom.isAfter(noticedUntil)) throw new IllegalArgumentException("Noticing date cannot be reversed.");
         changeTitle(title);
         changeContent(content);
         changeNoticedFrom(noticedFrom);
