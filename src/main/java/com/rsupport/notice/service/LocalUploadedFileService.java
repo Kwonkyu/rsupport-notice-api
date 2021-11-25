@@ -7,6 +7,7 @@ import com.rsupport.notice.exception.PostNotFoundException;
 import com.rsupport.notice.repository.NoticePostRepository;
 import com.rsupport.notice.repository.UploadedFileRepository;
 import com.rsupport.notice.util.UploadedFileHashUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@Slf4j
 public class LocalUploadedFileService {
 
     private final UploadedFileRepository uploadedFileRepository;
@@ -42,7 +44,11 @@ public class LocalUploadedFileService {
                 .filter(file -> !file.isEmpty())
                 .map(file -> {
                     String hash = hashUtil.hash(file);
-                    if(hash.isEmpty()) return null;
+                    if(hash.isEmpty()) {
+                        log.warn("File {} is not uploaded to the server because of hash function failure.",
+                                file.getOriginalFilename());
+                        return null;
+                    }
 
                     return uploadedFileRepository.findByFileHashString(hash).orElseGet(() -> {
                         String originalFilename = Objects.requireNonNullElse(file.getOriginalFilename(), hash);
@@ -53,7 +59,8 @@ public class LocalUploadedFileService {
                                     originalFilename,
                                     uploadedFilePath.resolve(originalFilename).toString()));
                         } catch (IOException e) {
-                            // TODO: logging file upload failure from here.
+                            log.error("File IO on {} failed. Please check file system authorities.",
+                                    uploadedFilePath.resolve(originalFilename).toAbsolutePath());
                             return null;
                         }
                     });

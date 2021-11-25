@@ -1,5 +1,6 @@
 package com.rsupport.notice.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,6 +10,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 @Component
+@Slf4j
 public class UploadedFileHashUtil {
 
     public String hash(MultipartFile file) {
@@ -19,7 +21,7 @@ public class UploadedFileHashUtil {
             byte[] hashed = md5.digest();
             return DatatypeConverter.printHexBinary(hashed);
         } catch (IOException | NoSuchAlgorithmException e) {
-            // TODO: logging here.
+            log.error("{} occur when hashing file {} - {}", e.getClass(), file.getOriginalFilename(), e.getMessage());
             return "";
         }
     }
