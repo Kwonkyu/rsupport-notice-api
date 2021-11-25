@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -73,10 +74,29 @@ public class NoticePost extends AuditableEntity {
 
     @Builder
     public NoticePost(String title, String content, LocalDateTime noticedFrom, LocalDateTime noticedUntil) {
+        if(noticedFrom.isAfter(noticedUntil)) throw new IllegalArgumentException("Noticing date cannot be reversed.");
         changeTitle(title);
         changeContent(content);
         changeNoticedFrom(noticedFrom);
         changeNoticedUntil(noticedUntil);
         this.hit = 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NoticePost that = (NoticePost) o;
+        return hit == that.hit &&
+                title.equals(that.title) &&
+                content.equals(that.content) &&
+                noticedFrom.equals(that.noticedFrom) &&
+                noticedUntil.equals(that.noticedUntil) &&
+                attachedFiles.equals(that.attachedFiles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, content, noticedFrom, noticedUntil, hit, attachedFiles);
     }
 }

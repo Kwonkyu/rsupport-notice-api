@@ -2,6 +2,7 @@ package com.rsupport.notice.service;
 
 import com.rsupport.notice.controller.bind.PostInformationRequest;
 import com.rsupport.notice.dto.NoticePostDTO;
+import com.rsupport.notice.dto.NoticePostsDTO;
 import com.rsupport.notice.entity.NoticePost;
 import com.rsupport.notice.entity.NoticePostHit;
 import com.rsupport.notice.entity.UploadedLocalFile;
@@ -10,13 +11,13 @@ import com.rsupport.notice.repository.NoticePostHitRepository;
 import com.rsupport.notice.repository.NoticePostRepository;
 import com.rsupport.notice.repository.UploadedFileRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,9 +57,13 @@ public class BasicNoticePostService {
         return new NoticePostDTO(savedNotice);
     }
 
-    public List<NoticePostDTO> listPostsByPage(Pageable pageable) {
-        return noticePostRepository.findAll(pageable).map(noticePost ->
-                new NoticePostDTO(noticePost, findNoticePostHit(noticePost).getHit())).toList();
+    public NoticePostsDTO listPostsByPage(Pageable pageable) {
+        Page<NoticePost> noticePosts = noticePostRepository.findAll(pageable);
+        return new NoticePostsDTO(
+                noticePosts.toList(),
+                noticePosts.getNumber(),
+                noticePosts.getSize(),
+                noticePosts.getTotalPages());
     }
 
     public NoticePostDTO findPost(long postId) {

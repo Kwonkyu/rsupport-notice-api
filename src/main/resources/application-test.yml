@@ -1,0 +1,16 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    generate-ddl: true
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/rsupport_test
+    username: noticemanager
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+JWT_SECRET: JWT_SECRET_VALUE

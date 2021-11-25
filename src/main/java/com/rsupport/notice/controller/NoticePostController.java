@@ -3,21 +3,20 @@ package com.rsupport.notice.controller;
 import com.rsupport.notice.controller.bind.ApiResponse;
 import com.rsupport.notice.controller.bind.PostInformationRequest;
 import com.rsupport.notice.dto.NoticePostDTO;
+import com.rsupport.notice.dto.NoticePostsDTO;
 import com.rsupport.notice.dto.UploadedLocalFilesDTO;
 import com.rsupport.notice.service.BasicNoticePostService;
 import com.rsupport.notice.service.LocalUploadedFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RequiredArgsConstructor
-@Controller
+@RestController
 @RequestMapping("/api/v1/notice")
 public class NoticePostController {
 
@@ -25,9 +24,9 @@ public class NoticePostController {
     private final LocalUploadedFileService fileService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<NoticePostDTO>>> listPosts(Pageable pageable) { // page, size, sort params.
-        List<NoticePostDTO> noticePostDTOS = noticePostService.listPostsByPage(pageable);
-        return ResponseEntity.ok(ApiResponse.success(noticePostDTOS));
+    public ResponseEntity<ApiResponse<NoticePostsDTO>> listPosts(Pageable pageable) { // page, size, sort params.
+        NoticePostsDTO noticePostsDTO = noticePostService.listPostsByPage(pageable);
+        return ResponseEntity.ok(ApiResponse.success(noticePostsDTO));
     }
 
     @GetMapping("/{postId}")
