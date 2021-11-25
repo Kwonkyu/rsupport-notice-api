@@ -3,6 +3,7 @@ package com.rsupport.notice.service;
 import com.rsupport.notice.dto.UploadedLocalFilesDTO;
 import com.rsupport.notice.entity.NoticePost;
 import com.rsupport.notice.entity.UploadedLocalFile;
+import com.rsupport.notice.exception.FileNotFoundException;
 import com.rsupport.notice.exception.PostNotFoundException;
 import com.rsupport.notice.repository.NoticePostRepository;
 import com.rsupport.notice.repository.UploadedFileRepository;
@@ -77,7 +78,7 @@ public class LocalUploadedFileService {
 
     public Path getFileByHash(String fileHash) {
         UploadedLocalFile uploadedLocalFile = uploadedFileRepository.findByFileHashString(fileHash)
-                .orElseThrow(() -> new IllegalArgumentException("File not found."));
+                .orElseThrow(() -> new FileNotFoundException(fileHash));
         return Path.of(uploadedLocalFile.getFileLocation());
     }
 

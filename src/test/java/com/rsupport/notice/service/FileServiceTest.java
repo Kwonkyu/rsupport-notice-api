@@ -4,6 +4,8 @@ import com.rsupport.notice.controller.bind.PostInformationRequest;
 import com.rsupport.notice.dto.NoticePostDTO;
 import com.rsupport.notice.dto.UploadedLocalFileDTO;
 import com.rsupport.notice.dto.UploadedLocalFilesDTO;
+import com.rsupport.notice.exception.FileNotFoundException;
+import com.rsupport.notice.exception.PostNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,10 +62,22 @@ class FileServiceTest {
     }
 
     @Test
+    @DisplayName("Try get file using unknown id.")
+    void tryGetFile() {
+        assertThrows(FileNotFoundException.class, () -> fileService.getFileByHash("UNKNOWN_HASH"));
+    }
+
+    @Test
     @DisplayName("Get file.")
     void getFile() {
         Path fileByHash = fileService.getFileByHash(fileHash1);
         assertEquals(mockFile1.getOriginalFilename(), fileByHash.getFileName().toString());
+    }
+
+    @Test
+    @DisplayName("Try get attached files of not existing notice.")
+    void tryGetAttachedFiles() {
+        assertThrows(PostNotFoundException.class, () -> fileService.getAttachedFileList(9999L));
     }
 
     @Test
@@ -74,6 +88,21 @@ class FileServiceTest {
         UploadedLocalFileDTO file = attachedFileList.getUploadedFileHashes().get(0);
         assertEquals(fileHash1, file.getFileHash());
         assertEquals(mockFile1.getOriginalFilename(), file.getFilename());
+    }
+
+    @Test
+    @DisplayName("Try add new files which doesn't exist when updating notice.")
+    void tryAttachNewFiles() {
+        long postId = postDTO.getId();
+        PostInformationRequest request = new PostInformationRequest();
+        request.setTitle("TITLE");
+        request.setContent("CONTENT");
+        request.setNoticedFrom(LocalDateTime.now());
+        request.setNoticedUntil(LocalDateTime.now().plusDays(1));
+        request.setAttachedFileHashes(List.of("UNKNOWN_FILE_HASH"));
+
+        NoticePostDTO noticePostDTO = noticePostService.updatePost(postId, request);
+        assertTrue(noticePostDTO.getUploadedLocalFilesDTO().getUploadedFileHashes().isEmpty());
     }
 
     @Test
