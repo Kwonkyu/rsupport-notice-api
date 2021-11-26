@@ -13,6 +13,10 @@ spring:
     password: ${MYSQL8_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  redis:
+    host: ${REDIS6_HOST}
+    port: ${REDIS6_PORT}
+
 logging:
   level:
     org:
