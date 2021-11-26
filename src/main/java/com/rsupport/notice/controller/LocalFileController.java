@@ -1,7 +1,7 @@
 package com.rsupport.notice.controller;
 
 import com.rsupport.notice.controller.bind.ApiResponse;
-import com.rsupport.notice.dto.UploadedLocalFilesDTO;
+import com.rsupport.notice.dto.UploadedFilesDTO;
 import com.rsupport.notice.service.LocalUploadedFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
@@ -19,14 +19,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/files")
-public class FileController {
+public class LocalFileController {
 
     private final LocalUploadedFileService fileService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<UploadedLocalFilesDTO>> uploadFiles(@RequestParam("files") List<MultipartFile> files) {
-        UploadedLocalFilesDTO uploadedLocalFilesDTO = fileService.uploadFiles(files);
-        return ResponseEntity.ok(ApiResponse.success(uploadedLocalFilesDTO));
+    public ResponseEntity<ApiResponse<UploadedFilesDTO>> uploadFiles(@RequestParam("files") List<MultipartFile> files) {
+        UploadedFilesDTO uploadedFilesDTO = fileService.uploadFiles(files);
+        return ResponseEntity.ok(ApiResponse.success(uploadedFilesDTO));
     }
 
     @GetMapping("/{fileHash}")

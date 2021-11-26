@@ -1,11 +1,11 @@
 package com.rsupport.notice.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.rsupport.notice.entity.UploadedLocalFile;
+import com.rsupport.notice.entity.UploadedFile;
 import lombok.Getter;
 
 @Getter
-public class UploadedLocalFileDTO {
+public class UploadedFileDTO {
 
     @JsonProperty("fileIdentificationString")
     private final String fileHash;
@@ -13,7 +13,7 @@ public class UploadedLocalFileDTO {
     @JsonProperty("originalFilename")
     private final String filename;
 
-    public UploadedLocalFileDTO(UploadedLocalFile file) {
+    public UploadedFileDTO(UploadedFile file) {
         this.fileHash = file.getFileHashString();
         this.filename = file.getFilename();
     }

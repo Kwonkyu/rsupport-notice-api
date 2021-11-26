@@ -2,11 +2,11 @@ package com.rsupport.notice.controller;
 
 import com.rsupport.notice.controller.bind.ApiResponse;
 import com.rsupport.notice.controller.bind.PostInformationRequest;
+import com.rsupport.notice.dto.AddressableUploadedFilesDTO;
 import com.rsupport.notice.dto.NoticePostDTO;
 import com.rsupport.notice.dto.NoticePostsDTO;
-import com.rsupport.notice.dto.UploadedLocalFilesDTO;
 import com.rsupport.notice.service.BasicNoticePostService;
-import com.rsupport.notice.service.LocalUploadedFileService;
+import com.rsupport.notice.service.CloudinaryUploadedFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ import javax.validation.Valid;
 public class NoticePostController {
 
     private final BasicNoticePostService noticePostService;
-    private final LocalUploadedFileService fileService;
+    private final CloudinaryUploadedFileService cloudinaryUploadedFileService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<NoticePostsDTO>> listPosts(Pageable pageable) { // page, size, sort params.
@@ -57,8 +57,8 @@ public class NoticePostController {
     }
 
     @GetMapping("/{postId}/files")
-    public ResponseEntity<ApiResponse<UploadedLocalFilesDTO>> getAttachedFiles(@PathVariable("postId") long postId) {
-        UploadedLocalFilesDTO attachedFileList = fileService.getAttachedFileList(postId);
+    public ResponseEntity<ApiResponse<AddressableUploadedFilesDTO>> getAttachedFiles(@PathVariable("postId") long postId) {
+        AddressableUploadedFilesDTO attachedFileList = cloudinaryUploadedFileService.getAttachedFileList(postId);
         return ResponseEntity.ok(ApiResponse.success(attachedFileList));
     }
 

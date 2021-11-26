@@ -36,14 +36,14 @@ public class NoticePost extends AuditableEntity {
     private int hit;
 
     @OneToMany(cascade = CascadeType.PERSIST)
-    private final List<UploadedLocalFile> attachedFiles = new ArrayList<>();
+    private final List<UploadedFile> attachedFiles = new ArrayList<>();
 
-    public void addFile(UploadedLocalFile file) {
+    public void addFile(UploadedFile file) {
         Assert.notNull(file, "Attaching file cannot be null.");
         this.attachedFiles.add(file);
     }
 
-    public void removeFile(UploadedLocalFile file) {
+    public void removeFile(UploadedFile file) {
         Assert.notNull(file, "Removing file cannot be null.");
         this.attachedFiles.remove(file);
     }

@@ -37,7 +37,7 @@ public class NoticePostDTO {
     private final int hit;
 
     @JsonProperty("attachedFiles")
-    private final UploadedLocalFilesDTO uploadedLocalFilesDTO;
+    private final UploadedFilesDTO uploadedFilesDTO;
 
     public NoticePostDTO(NoticePost post) {
         this(post, post.getHit());
@@ -51,7 +51,7 @@ public class NoticePostDTO {
         this.noticedFrom = post.getNoticedFrom();
         this.noticedUntil = post.getNoticedUntil();
         this.hit = hit;
-        this.uploadedLocalFilesDTO = new UploadedLocalFilesDTO(post.getAttachedFiles());
+        this.uploadedFilesDTO = new UploadedFilesDTO(post.getAttachedFiles());
     }
 
 }

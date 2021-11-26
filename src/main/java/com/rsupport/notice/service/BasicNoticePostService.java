@@ -5,7 +5,7 @@ import com.rsupport.notice.dto.NoticePostDTO;
 import com.rsupport.notice.dto.NoticePostsDTO;
 import com.rsupport.notice.entity.NoticePost;
 import com.rsupport.notice.entity.NoticePostHit;
-import com.rsupport.notice.entity.UploadedLocalFile;
+import com.rsupport.notice.entity.UploadedFile;
 import com.rsupport.notice.exception.PostNotFoundException;
 import com.rsupport.notice.repository.NoticePostHitRepository;
 import com.rsupport.notice.repository.NoticePostRepository;
@@ -85,12 +85,12 @@ public class BasicNoticePostService {
         noticePost.changeNoticedUntil(request.getNoticedUntil());
         if(request.getAttachedFileHashes() == null)
             throw new IllegalArgumentException("Attached files cannot be null.");
-        Set<UploadedLocalFile> updatedFiles = request.getAttachedFileHashes().stream()
+        Set<UploadedFile> updatedFiles = request.getAttachedFileHashes().stream()
                 .map(fileRepository::findByFileHashString)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toSet());
-        Set<UploadedLocalFile> originalFiles = new HashSet<>(noticePost.getAttachedFiles());
+        Set<UploadedFile> originalFiles = new HashSet<>(noticePost.getAttachedFiles());
         originalFiles.stream()
                 .filter(file -> !updatedFiles.contains(file))
                 .forEach(noticePost::removeFile);

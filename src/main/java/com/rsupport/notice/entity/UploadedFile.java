@@ -14,7 +14,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Table(name = "uploaded_local_file")
 @EntityListeners(AuditingEntityListener.class)
-public class UploadedLocalFile extends IdentifiableEntity {
+public class UploadedFile extends IdentifiableEntity {
 
     @Column(name = "hash", nullable = false)
     private String fileHashString;
@@ -29,7 +29,7 @@ public class UploadedLocalFile extends IdentifiableEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UploadedLocalFile that = (UploadedLocalFile) o;
+        UploadedFile that = (UploadedFile) o;
         return fileHashString.equals(that.fileHashString) && filename.equals(that.filename) && fileLocation.equals(that.fileLocation);
     }
 
