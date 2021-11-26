@@ -46,6 +46,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/api/v1/notice/*").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/v1/notice/*").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/v1/files").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/v2/files").authenticated()
                 .antMatchers("/api/v1/**").permitAll();
 
         http.cors().and().csrf().disable();

@@ -2,8 +2,8 @@ package com.rsupport.notice.service;
 
 import com.rsupport.notice.controller.bind.PostInformationRequest;
 import com.rsupport.notice.dto.NoticePostDTO;
-import com.rsupport.notice.dto.UploadedLocalFileDTO;
-import com.rsupport.notice.dto.UploadedLocalFilesDTO;
+import com.rsupport.notice.dto.UploadedFileDTO;
+import com.rsupport.notice.dto.UploadedFilesDTO;
 import com.rsupport.notice.exception.FileNotFoundException;
 import com.rsupport.notice.exception.PostNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,9 +25,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-class FileServiceTest {
+class LocalFileServiceTest {
 
-    @Autowired LocalUploadedFileService fileService;
+    @Autowired
+    LocalUploadedFileService fileService;
     @Autowired BasicNoticePostService noticePostService;
 
     String fileHash1;
@@ -48,7 +49,7 @@ class FileServiceTest {
                 "mock_file2.txt",
                 MediaType.MULTIPART_FORM_DATA_VALUE,
                 "Cruel World".getBytes());
-        UploadedLocalFilesDTO files = fileService.uploadFiles(List.of(mockFile1, mockFile2));
+        UploadedFilesDTO files = fileService.uploadFiles(List.of(mockFile1, mockFile2));
         fileHash1 = files.getUploadedFileHashes().get(0).getFileHash();
         fileHash2 = files.getUploadedFileHashes().get(1).getFileHash();
 
@@ -83,9 +84,9 @@ class FileServiceTest {
     @Test
     @DisplayName("Get attached files of notice.")
     void getAttachedFiles() {
-        UploadedLocalFilesDTO attachedFileList = fileService.getAttachedFileList(postDTO.getId());
+        UploadedFilesDTO attachedFileList = fileService.getAttachedFileList(postDTO.getId());
         assertFalse(attachedFileList.getUploadedFileHashes().isEmpty());
-        UploadedLocalFileDTO file = attachedFileList.getUploadedFileHashes().get(0);
+        UploadedFileDTO file = attachedFileList.getUploadedFileHashes().get(0);
         assertEquals(fileHash1, file.getFileHash());
         assertEquals(mockFile1.getOriginalFilename(), file.getFilename());
     }
@@ -102,7 +103,7 @@ class FileServiceTest {
         request.setAttachedFileHashes(List.of("UNKNOWN_FILE_HASH"));
 
         NoticePostDTO noticePostDTO = noticePostService.updatePost(postId, request);
-        assertTrue(noticePostDTO.getUploadedLocalFilesDTO().getUploadedFileHashes().isEmpty());
+        assertTrue(noticePostDTO.getUploadedFilesDTO().getUploadedFileHashes().isEmpty());
     }
 
     @Test
@@ -117,7 +118,7 @@ class FileServiceTest {
 
         noticePostService.updatePost(postDTO.getId(), request);
 
-        UploadedLocalFilesDTO attachedFileList = fileService.getAttachedFileList(postDTO.getId());
+        UploadedFilesDTO attachedFileList = fileService.getAttachedFileList(postDTO.getId());
         assertFalse(attachedFileList.getUploadedFileHashes().isEmpty());
         assertEquals(2, attachedFileList.getUploadedFileHashes().size());
         assertTrue(attachedFileList.getUploadedFileHashes().stream()
@@ -138,7 +139,7 @@ class FileServiceTest {
 
         noticePostService.updatePost(postDTO.getId(), request);
 
-        UploadedLocalFilesDTO attachedFileList = fileService.getAttachedFileList(postDTO.getId());
+        UploadedFilesDTO attachedFileList = fileService.getAttachedFileList(postDTO.getId());
         assertFalse(attachedFileList.getUploadedFileHashes().isEmpty());
         assertEquals(1, attachedFileList.getUploadedFileHashes().size());
         assertTrue(attachedFileList.getUploadedFileHashes().stream()

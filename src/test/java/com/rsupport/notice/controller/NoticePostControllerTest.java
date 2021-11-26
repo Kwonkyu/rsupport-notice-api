@@ -3,7 +3,7 @@ package com.rsupport.notice.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rsupport.notice.controller.bind.PostInformationRequest;
 import com.rsupport.notice.entity.NoticePost;
-import com.rsupport.notice.entity.UploadedLocalFile;
+import com.rsupport.notice.entity.UploadedFile;
 import com.rsupport.notice.repository.NoticePostHitRepository;
 import com.rsupport.notice.repository.NoticePostRepository;
 import com.rsupport.notice.repository.UploadedFileRepository;
@@ -50,16 +50,16 @@ class NoticePostControllerTest {
     @Autowired
     JwtUtil jwtUtil;
 
-    UploadedLocalFile file1;
-    UploadedLocalFile file2;
+    UploadedFile file1;
+    UploadedFile file2;
     NoticePost noticePost;
     String accessToken;
 
     @BeforeEach
     void init() {
         basicNoticePostService = new BasicNoticePostService(noticePostRepository, noticePostHitRepository, uploadedFileRepository);
-        file1 = uploadedFileRepository.save(new UploadedLocalFile("FILE_HASH_STRING_1", "filename1", "location1"));
-        file2 = uploadedFileRepository.save(new UploadedLocalFile("FILE_HASH_STRING_2", "filename2", "location2"));
+        file1 = uploadedFileRepository.save(new UploadedFile("FILE_HASH_STRING_1", "filename1", "location1"));
+        file2 = uploadedFileRepository.save(new UploadedFile("FILE_HASH_STRING_2", "filename2", "location2"));
         noticePost = NoticePost.builder()
                 .title("TITLE")
                 .content("CONTENT")

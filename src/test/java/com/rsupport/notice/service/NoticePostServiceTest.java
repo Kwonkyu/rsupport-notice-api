@@ -4,7 +4,7 @@ import com.rsupport.notice.controller.bind.PostInformationRequest;
 import com.rsupport.notice.dto.NoticePostDTO;
 import com.rsupport.notice.dto.NoticePostsDTO;
 import com.rsupport.notice.entity.NoticePost;
-import com.rsupport.notice.entity.UploadedLocalFile;
+import com.rsupport.notice.entity.UploadedFile;
 import com.rsupport.notice.exception.PostNotFoundException;
 import com.rsupport.notice.repository.NoticePostHitRepository;
 import com.rsupport.notice.repository.NoticePostRepository;
@@ -35,15 +35,15 @@ class NoticePostServiceTest {
 
     BasicNoticePostService basicNoticePostService;
 
-    UploadedLocalFile file1;
-    UploadedLocalFile file2;
+    UploadedFile file1;
+    UploadedFile file2;
     NoticePost noticePost;
 
     @BeforeEach
     void init() {
         basicNoticePostService = new BasicNoticePostService(noticePostRepository, noticePostHitRepository, uploadedFileRepository);
-        file1 = uploadedFileRepository.save(new UploadedLocalFile("FILE_HASH_STRING_1", "filename1", "location1"));
-        file2 = uploadedFileRepository.save(new UploadedLocalFile("FILE_HASH_STRING_2", "filename2", "location2"));
+        file1 = uploadedFileRepository.save(new UploadedFile("FILE_HASH_STRING_1", "filename1", "location1"));
+        file2 = uploadedFileRepository.save(new UploadedFile("FILE_HASH_STRING_2", "filename2", "location2"));
         noticePost = NoticePost.builder()
                 .title("TITLE")
                 .content("CONTENT")
@@ -107,9 +107,9 @@ class NoticePostServiceTest {
         assertEquals(request.getNoticedFrom(), post.getNoticedFrom());
         assertEquals(request.getNoticedUntil(), post.getNoticedUntil());
         assertEquals(0, post.getHit());
-        assertNotNull(post.getUploadedLocalFilesDTO());
-        assertEquals(file1.getFileHashString(), post.getUploadedLocalFilesDTO().getUploadedFileHashes().get(0).getFileHash());
-        assertEquals(file1.getFilename(), post.getUploadedLocalFilesDTO().getUploadedFileHashes().get(0).getFilename());
+        assertNotNull(post.getUploadedFilesDTO());
+        assertEquals(file1.getFileHashString(), post.getUploadedFilesDTO().getUploadedFileHashes().get(0).getFileHash());
+        assertEquals(file1.getFilename(), post.getUploadedFilesDTO().getUploadedFileHashes().get(0).getFilename());
     }
 
     @Test
@@ -127,9 +127,9 @@ class NoticePostServiceTest {
         assertEquals(noticePost.getCreatedAt(), post.getCreatedAt());
         assertEquals(noticePost.getNoticedFrom(), post.getNoticedFrom());
         assertEquals(noticePost.getNoticedUntil(), post.getNoticedUntil());
-        assertEquals(noticePost.getAttachedFiles().size(), post.getUploadedLocalFilesDTO().getUploadedFileHashes().size());
-        assertEquals(file1.getFileHashString(), post.getUploadedLocalFilesDTO().getUploadedFileHashes().get(0).getFileHash());
-        assertEquals(file1.getFilename(), post.getUploadedLocalFilesDTO().getUploadedFileHashes().get(0).getFilename());
+        assertEquals(noticePost.getAttachedFiles().size(), post.getUploadedFilesDTO().getUploadedFileHashes().size());
+        assertEquals(file1.getFileHashString(), post.getUploadedFilesDTO().getUploadedFileHashes().get(0).getFileHash());
+        assertEquals(file1.getFilename(), post.getUploadedFilesDTO().getUploadedFileHashes().get(0).getFilename());
     }
 
     @Test
@@ -210,8 +210,8 @@ class NoticePostServiceTest {
         assertEquals(request.getContent(), noticePostDTO.getContent());
         assertEquals(request.getNoticedFrom(), noticePostDTO.getNoticedFrom());
         assertEquals(request.getNoticedUntil(), noticePostDTO.getNoticedUntil());
-        assertFalse(noticePostDTO.getUploadedLocalFilesDTO().getUploadedFileHashes().isEmpty());
-        assertEquals(file2.getFileHashString(), noticePostDTO.getUploadedLocalFilesDTO().getUploadedFileHashes().get(0).getFileHash());
+        assertFalse(noticePostDTO.getUploadedFilesDTO().getUploadedFileHashes().isEmpty());
+        assertEquals(file2.getFileHashString(), noticePostDTO.getUploadedFilesDTO().getUploadedFileHashes().get(0).getFileHash());
     }
 
     @Test

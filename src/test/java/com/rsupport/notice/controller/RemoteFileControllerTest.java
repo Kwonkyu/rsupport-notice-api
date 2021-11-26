@@ -1,10 +1,10 @@
 package com.rsupport.notice.controller;
 
 import com.rsupport.notice.controller.bind.PostInformationRequest;
+import com.rsupport.notice.dto.AddressableUploadedFilesDTO;
 import com.rsupport.notice.dto.NoticePostDTO;
-import com.rsupport.notice.dto.UploadedLocalFilesDTO;
 import com.rsupport.notice.service.BasicNoticePostService;
-import com.rsupport.notice.service.LocalUploadedFileService;
+import com.rsupport.notice.service.CloudinaryUploadedFileService;
 import com.rsupport.notice.util.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,12 +29,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @Transactional
 @AutoConfigureMockMvc
-class FileControllerTest {
+class RemoteFileControllerTest {
 
     @Autowired
     MockMvc mockMvc;
     @Autowired
-    LocalUploadedFileService fileService;
+    CloudinaryUploadedFileService fileService;
     @Autowired
     BasicNoticePostService noticePostService;
     @Autowired
@@ -58,8 +58,8 @@ class FileControllerTest {
                 "mock_file2.txt",
                 MediaType.MULTIPART_FORM_DATA_VALUE,
                 "Cruel World".getBytes());
-        UploadedLocalFilesDTO files = fileService.uploadFiles(List.of(mockFile1));
-        fileHash1 = files.getUploadedFileHashes().get(0).getFileHash();
+        AddressableUploadedFilesDTO files = fileService.uploadFiles(List.of(mockFile1));
+        fileHash1 = files.getUploadedFiles().get(0).getFileHash();
 
         PostInformationRequest request = new PostInformationRequest();
         request.setTitle("TITLE");
@@ -75,36 +75,35 @@ class FileControllerTest {
     @Test
     @DisplayName("Try to upload file without authentication.")
     void tryUploadFiles() throws Exception {
-        mockMvc.perform(post("/api/v1/files")
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .content(mockFile2.getBytes()))
+        mockMvc.perform(multipart("/api/v2/files")
+                .file(mockFile2))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     @DisplayName("Upload files.")
     void uploadFiles() throws Exception {
-        mockMvc.perform(multipart("/api/v1/files")
+        mockMvc.perform(multipart("/api/v2/files")
                 .file(mockFile2)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.result.uploadedFiles").isNotEmpty());
+                .andExpect(jsonPath("$.result.uploadedFiles").isNotEmpty())
+                .andExpect(jsonPath("$.result.uploadedFiles[0].fileLocation").isNotEmpty());
     }
 
     @Test
-    @DisplayName("Try download file with bad request.")
-    void tryDownloadFile() throws Exception {
-        mockMvc.perform(get("/api/v1/files/{fileHash}", "UNKNOWN_HASH"))
+    @DisplayName("Try get file uri with bad request.")
+    void tryGetFileUri() throws Exception {
+        mockMvc.perform(get("/api/v2/files/{fileHash}", "UNKNOWN_HASH"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    @DisplayName("Download file.")
-    void downloadFile() throws Exception {
-        mockMvc.perform(get("/api/v1/files/{fileHash}", fileHash1))
+    @DisplayName("Get file uri.")
+    void getFileUri() throws Exception {
+        mockMvc.perform(get("/api/v2/files/{fileHash}", fileHash1))
                 .andExpect(status().isOk())
-                .andExpect(content().bytes(mockFile1.getBytes()));
+                .andExpect(jsonPath("$.result.fileLocation").isNotEmpty());
     }
 
 }
