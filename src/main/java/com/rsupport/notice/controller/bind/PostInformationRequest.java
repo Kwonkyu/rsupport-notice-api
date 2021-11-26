@@ -18,12 +18,12 @@ public class PostInformationRequest {
     @JsonProperty("postTitle")
     @NotBlank
     @Length(max = 255)
-    private String title;
+    private String title = "";
 
     @JsonProperty("postContent")
     @NotBlank
     @Length(max = 65535)
-    private String content;
+    private String content = "";
 
     @JsonProperty("postNoticedFrom")
     @NotNull
