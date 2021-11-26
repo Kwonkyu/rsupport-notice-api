@@ -269,9 +269,9 @@ class NoticePostControllerTest {
     void getAttachedFiles() throws Exception {
         mockMvc.perform(get("/api/v1/notice/{postId}/files", noticePost.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.result.attachedFiles").isArray())
-                .andExpect(jsonPath("$.result.attachedFiles[0].fileIdentificationString").value(file1.getFileHashString()))
-                .andExpect(jsonPath("$.result.attachedFiles[0].originalFilename").value(file1.getFilename()));
+                .andExpect(jsonPath("$.result.uploadedFiles").isArray())
+                .andExpect(jsonPath("$.result.uploadedFiles[0].fileIdentificationString").value(file1.getFileHashString()))
+                .andExpect(jsonPath("$.result.uploadedFiles[0].originalFilename").value(file1.getFilename()));
     }
 
 }
