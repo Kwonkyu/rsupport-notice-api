@@ -37,14 +37,16 @@ RSUPPORT 과제 테스트입니다.
 실제로 사용하게 될 애플리케이션 프로필은 [prod](./src/main/resources/application-prod.yml) 프로필이며 해당 프로필을 수정하거나 다음처럼 환경 설정을 진행할 수 있습니다.
 
 #### 환경 변수
-- ${MYSQL8_JDBC_URL}: 애플리케이션에서 접속할 데이터베이스의 jdbc URL.
-- ${MYSQL8_USERNAME}: 애플리케이션에서 접속할 데이터베이스의 사용자 명.
-- ${MYSQL8_PASSWORD}: 애플리케이션에서 접속할 데이터베이스의 사용자의 비밀번호.
-- ${MYSQL8_JDBC_TEST_URL}: 애플리케이션 빌드 시 사용할 테스트 데이터베이스의 jdbc URL.
-- ${MYSQL8_TEST_USERNAME}: 애플리케이션 빌드 시 사용할 테스트 데이터베이스의 사용자 명.
-- ${MYSQL8_TEST_PASSWORD}: 애플리케이션 빌드 시 사용할 테스트 데이터베이스의 사용자의 비밀번호.
+- ${MYSQL8_JDBC_URL}: 애플리케이션에서 접속할 데이터베이스의 jdbc URL 입니다.
+- ${MYSQL8_USERNAME}: 애플리케이션에서 접속할 데이터베이스의 사용자 명입니다.
+- ${MYSQL8_PASSWORD}: 애플리케이션에서 접속할 데이터베이스의 사용자의 비밀번호입니다.
+- ${MYSQL8_JDBC_TEST_URL}: 애플리케이션 빌드 시 사용할 테스트 데이터베이스의 jdbc URL 입니다.
+- ${MYSQL8_TEST_USERNAME}: 애플리케이션 빌드 시 사용할 테스트 데이터베이스의 사용자 명입니다.
+- ${MYSQL8_TEST_PASSWORD}: 애플리케이션 빌드 시 사용할 테스트 데이터베이스의 사용자의 비밀번호입니다.
+- ${REDIS6_HOST}: 애플리케이션에서 접속할 Redis의 주소입니다.
+- ${REDIS6_PORT}: 애플리케이션에서 접속할 Redis의 포트입니다.
 - ${CLOUDINARY_URL}: Cloudinary 서비스를 이용하기 위한 사용자 API 키. 이는 비밀키기 때문에 메일로 전송해드렸습니다. 
-- ${JWT_SECRET}: JWT 서명에 사용할 비밀 키.
+- ${JWT_SECRET}: JWT 서명에 사용할 비밀 키입니다.
 - ${SPRING_PROFILES_ACTIVE}: prod
 
 ### Gradle 빌드
