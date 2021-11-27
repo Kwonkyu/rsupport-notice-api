@@ -35,7 +35,7 @@ public class NoticePost extends AuditableEntity {
     @Column(name = "hit", nullable = false)
     private int hit;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.PERSIST)
     private final List<UploadedFile> attachedFiles = new ArrayList<>();
 
     public void addFile(UploadedFile file) {
